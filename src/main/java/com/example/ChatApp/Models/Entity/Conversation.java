@@ -29,12 +29,4 @@ public class Conversation {
         this.id = conversationId;
     }
 
-    public Conversation(String conversationName, String lastMessage) {
-        this.conversationName = conversationName;
-        this.conversationType = ConversationType.PRIVATE;
-        this.lastMessage = lastMessage;
-    }
-
-
-
 }

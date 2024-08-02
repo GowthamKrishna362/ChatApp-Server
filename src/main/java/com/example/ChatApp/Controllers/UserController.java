@@ -1,7 +1,7 @@
 package com.example.ChatApp.Controllers;
 
 import com.example.ChatApp.Models.Entity.User;
-import com.example.ChatApp.Services.UserService;
+import com.example.ChatApp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

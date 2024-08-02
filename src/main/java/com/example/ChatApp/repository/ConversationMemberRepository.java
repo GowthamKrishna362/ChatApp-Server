@@ -1,4 +1,4 @@
-package com.example.ChatApp.Repository;
+package com.example.ChatApp.repository;
 
 import com.example.ChatApp.Models.Entity.Conversation;
 import com.example.ChatApp.Models.Entity.ConversationMember;

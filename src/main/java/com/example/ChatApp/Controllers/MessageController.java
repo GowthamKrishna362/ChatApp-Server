@@ -1,11 +1,12 @@
 package com.example.ChatApp.Controllers;
 
+import com.example.ChatApp.Models.Dto.MessageRequestDto;
 import com.example.ChatApp.Models.Entity.Message;
-import com.example.ChatApp.Services.MessageService;
+import com.example.ChatApp.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @CrossOrigin
@@ -17,7 +18,8 @@ public class MessageController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("new")
-    public Message newMessage(@RequestBody Message message) {
-        return messageService.addNewMessage(message);
+    public Message newMessage(@RequestBody MessageRequestDto messageRequestDto) {
+        return messageService.addNewMessage(messageRequestDto);
     }
+
 }

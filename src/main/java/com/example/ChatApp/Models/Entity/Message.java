@@ -1,25 +1,43 @@
 package com.example.ChatApp.Models.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Entity
-@Table(name="Messages")
+@Table(name = "Messages")
 public class Message {
+
     @Id
     @GeneratedValue
     private Long id;
-    private String messageContent;
-    private String sender;
-    private Long conversationId;
 
-    public Message(String messageContent, String sender, Long conversationId) {
+    @ManyToOne
+    @JoinColumn(name = "sender")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "conversationId")
+    private Conversation conversation;
+
+    private String messageContent;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime timestamp;
+
+    public Message() {
+
+    }
+
+    public Message(String messageContent, String sender, Long conversationId, LocalDateTime timestamp) {
         this.messageContent = messageContent;
-        this.sender = sender;
-        this.conversationId = conversationId;
+        this.user = new User(sender);
+        this.conversation = new Conversation(conversationId);
+        this.timestamp = timestamp;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.ChatApp.Utils;
+package com.example.ChatApp.utils;
 
 public final class StringUtils {
     public static boolean isNullOrBlank(String str) {
