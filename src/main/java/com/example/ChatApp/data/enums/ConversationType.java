@@ -1,4 +1,4 @@
-package com.example.ChatApp.Models.Enum;
+package com.example.ChatApp.data.Enum;
 
 public enum ConversationType {
     GROUP,

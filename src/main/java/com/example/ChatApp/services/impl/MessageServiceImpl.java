@@ -1,14 +1,14 @@
-package com.example.ChatApp.services;
+package com.example.ChatApp.services.impl;
 
-import com.example.ChatApp.Models.Dto.MessageRequestDto;
-import com.example.ChatApp.Models.Entity.Message;
+import com.example.ChatApp.models.Dto.MessageRequestDto;
+import com.example.ChatApp.models.Entity.Message;
 import com.example.ChatApp.repository.MessageRepository;
 import com.example.ChatApp.utils.validators.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MessageService {
+public class MessageServiceImpl {
     @Autowired
     MessageRepository messageRepository;
 

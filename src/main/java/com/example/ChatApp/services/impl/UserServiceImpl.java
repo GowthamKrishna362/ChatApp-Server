@@ -1,13 +1,13 @@
-package com.example.ChatApp.services;
+package com.example.ChatApp.services.impl;
 
-import com.example.ChatApp.Models.Entity.User;
+import com.example.ChatApp.models.Entity.User;
 import com.example.ChatApp.repository.UserRepository;
 import com.example.ChatApp.utils.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class UserServiceImpl {
     @Autowired
     private UserRepository userRepository;
 

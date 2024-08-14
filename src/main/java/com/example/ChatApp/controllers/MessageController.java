@@ -5,6 +5,9 @@ import com.example.ChatApp.Models.Entity.Message;
 import com.example.ChatApp.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -20,6 +23,12 @@ public class MessageController {
     @PostMapping("new")
     public Message newMessage(@RequestBody MessageRequestDto messageRequestDto) {
         return messageService.addNewMessage(messageRequestDto);
+    }
+
+    @MessageMapping("/sendMessage")
+    @SendTo("/topic/public")
+    public Message sendMessage(@Payload Message message) {
+        return message;
     }
 
 }

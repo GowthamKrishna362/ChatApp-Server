@@ -1,4 +1,4 @@
-package com.example.ChatApp.Models.Dto;
+package com.example.ChatApp.models.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

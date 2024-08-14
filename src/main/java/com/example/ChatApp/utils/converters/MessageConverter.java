@@ -1,7 +1,7 @@
 package com.example.ChatApp.utils.converters;
 
-import com.example.ChatApp.Models.Dto.MessageResponseDto;
-import com.example.ChatApp.Models.Entity.Message;
+import com.example.ChatApp.data.dto.MessageResponseDto;
+import com.example.ChatApp.models.Entity.Message;
 
 import java.util.ArrayList;
 import java.util.List;
