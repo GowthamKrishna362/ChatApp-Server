@@ -1,11 +1,13 @@
-package com.example.ChatApp.Models.Entity;
+package com.example.ChatApp.models.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,16 +16,17 @@ import java.time.LocalDateTime;
 public class Message {
 
     @Id
+    @Column(unique = true, updatable = false, nullable = false)
     @GeneratedValue
-    private Long id;
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "sender")
-    private User user;
+    private User sender;
 
     @ManyToOne
     @JoinColumn(name = "conversationId")
-    private Conversation conversation;
+    private PrivateConversation conversation;
 
     private String messageContent;
 
@@ -34,10 +37,10 @@ public class Message {
 
     }
 
-    public Message(String messageContent, String sender, Long conversationId, LocalDateTime timestamp) {
+    public Message(String messageContent, User sender, PrivateConversation conversation, LocalDateTime timestamp) {
         this.messageContent = messageContent;
-        this.user = new User(sender);
-        this.conversation = new Conversation(conversationId);
+        this.sender = sender;
+        this.conversation = conversation;
         this.timestamp = timestamp;
     }
 }

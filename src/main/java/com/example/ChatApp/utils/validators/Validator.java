@@ -17,7 +17,7 @@ public class Validator {
         }
     }
     public static void validateValuePresent(Optional<?> value, String valueName) {
-        if(!value.isPresent()) {
+        if(value.isEmpty()) {
             throw  new ValidationException(valueName + " is not present");
         }
     }

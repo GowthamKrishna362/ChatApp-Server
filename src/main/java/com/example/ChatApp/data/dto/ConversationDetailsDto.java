@@ -1,10 +1,8 @@
 package com.example.ChatApp.data.dto;
 
-import com.example.ChatApp.models.Entity.Conversation;
+import com.example.ChatApp.data.conversation.profile.BaseConversationProfile;
 
 import java.util.List;
 
-public class ConversationResponseDto {
-    private Conversation conversation;
-    private List<UserResponseDto> members;
+public record ConversationDetailsDto(BaseConversationProfile conversationMetadata, List<MessageResponseDto> messages) {
 }

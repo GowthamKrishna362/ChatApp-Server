@@ -1,5 +1,6 @@
-package com.example.ChatApp.models.Dto;
+package com.example.ChatApp.data.dto;
 
+import com.example.ChatApp.models.Entity.Message;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,9 +11,16 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 public class MessageResponseDto {
-    private Long id;
-    private Long conversationId;
+    private String id;
+    private String conversationId;
     private String sender;
     private String messageContent;
     private LocalDateTime timestamp;
+    public MessageResponseDto(Message message) {
+        this.id = message.getId().toString();
+        this.conversationId = message.getConversation().getId().toString();
+        this.sender = message.getSender().getUsername();
+        this.messageContent = message.getMessageContent();
+        this.timestamp = message.getTimestamp();
+    }
 }

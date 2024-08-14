@@ -1,7 +1,8 @@
-package com.example.ChatApp.Controllers;
+package com.example.ChatApp.controllers;
 
-import com.example.ChatApp.Models.Entity.User;
-import com.example.ChatApp.services.UserService;
+import com.example.ChatApp.data.dto.LoginRequestDto;
+import com.example.ChatApp.models.Entity.User;
+import com.example.ChatApp.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/user")
 public class UserController {
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.CREATED)
@@ -22,8 +23,8 @@ public class UserController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public User login(@RequestBody User user) {
-        return user;
+    public void login(@RequestBody LoginRequestDto loginRequestDto) {
+         userService.login(loginRequestDto);
     }
 
 

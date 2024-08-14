@@ -1,4 +1,4 @@
 package com.example.ChatApp.data.dto;
 
-public class LoginRequestDto {
+public record LoginRequestDto(String username, String password) {
 }

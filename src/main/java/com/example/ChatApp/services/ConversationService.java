@@ -1,16 +1,15 @@
 package com.example.ChatApp.services;
 
-import com.example.ChatApp.models.Dto.MessageResponseDto;
-import com.example.ChatApp.models.Entity.Conversation;
+import com.example.ChatApp.data.conversation.profile.PrivateConversationProfile;
+import com.example.ChatApp.data.dto.ConversationDetailsDto;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface ConversationServiceI {
+public interface ConversationService {
     @Transactional()
-    Conversation addNewConversation(String fromUsername, String targetUsername);
-
-    List<Conversation> getAllConversations(String username);
-
-    List<MessageResponseDto> getConversationMessages(Long conversationId);
+    PrivateConversationProfile addNewPrivateConversation(String fromUsername, String targetUsername);
+    List<PrivateConversationProfile> getAllConversations(String username);
+    ConversationDetailsDto getConversationDetails(UUID conversationId);
 }

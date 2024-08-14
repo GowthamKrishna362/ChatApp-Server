@@ -1,34 +1,31 @@
-package com.example.ChatApp.Controllers;
+package com.example.ChatApp.controllers;
 
-import com.example.ChatApp.Models.Dto.MessageRequestDto;
-import com.example.ChatApp.Models.Entity.Message;
-import com.example.ChatApp.services.MessageService;
+import com.example.ChatApp.data.dto.MessageResponseDto;
+import com.example.ChatApp.data.dto.PublishMessageRequestDto;
+import com.example.ChatApp.models.Entity.Message;
+import com.example.ChatApp.services.impl.MessageServiceImpl;
+import com.example.ChatApp.utils.converters.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 
 
-@RestController
-@CrossOrigin
-@RequestMapping("/api/v1/message")
+@Controller
 public class MessageController {
 
     @Autowired
-    MessageService messageService;
-
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("new")
-    public Message newMessage(@RequestBody MessageRequestDto messageRequestDto) {
-        return messageService.addNewMessage(messageRequestDto);
-    }
+    MessageServiceImpl messageService;
+    @Autowired private SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/sendMessage")
-    @SendTo("/topic/public")
-    public Message sendMessage(@Payload Message message) {
-        return message;
+    public void sendMessage(@Payload PublishMessageRequestDto publishMessageRequestDto) {
+        MessageResponseDto messageResponseDto = messageService.addNewMessage(publishMessageRequestDto);
+        messagingTemplate.convertAndSend(
+                "/topic/" + publishMessageRequestDto.getConversationId(),
+                messageResponseDto
+        );
     }
 
 }

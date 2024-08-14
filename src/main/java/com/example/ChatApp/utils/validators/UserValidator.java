@@ -1,6 +1,6 @@
 package com.example.ChatApp.utils.validators;
 
-import com.example.ChatApp.Models.Entity.User;
+import com.example.ChatApp.models.Entity.User;
 
 public class UserValidator extends Validator {
     public static void checkValidCredentials(User user, boolean isNewUser) {

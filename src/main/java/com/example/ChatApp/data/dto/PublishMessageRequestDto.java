@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
-public class MessageRequestDto {
+public class PublishMessageRequestDto {
 
     private final String sender;
     private final String messageContent;
