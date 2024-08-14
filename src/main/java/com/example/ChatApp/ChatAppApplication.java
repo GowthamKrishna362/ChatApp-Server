@@ -1,6 +1,6 @@
 package com.example.ChatApp;
 
-import com.example.ChatApp.Repository.UserRepository;
+import com.example.ChatApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
