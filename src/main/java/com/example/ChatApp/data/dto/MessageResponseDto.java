@@ -1,6 +1,6 @@
 package com.example.ChatApp.data.dto;
 
-import com.example.ChatApp.models.Entity.Message;
+import com.example.ChatApp.models.Message;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

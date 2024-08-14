@@ -1,7 +1,6 @@
 package com.example.ChatApp.repository;
 
-import com.example.ChatApp.models.Entity.BaseConversation;
-import com.example.ChatApp.models.Entity.PrivateConversation;
+import com.example.ChatApp.models.BaseConversation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

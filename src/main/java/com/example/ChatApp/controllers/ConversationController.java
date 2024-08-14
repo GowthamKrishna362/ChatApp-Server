@@ -1,7 +1,8 @@
 package com.example.ChatApp.controllers;
 
+import com.example.ChatApp.data.conversation.profile.BaseConversationProfile;
 import com.example.ChatApp.data.conversation.profile.PrivateConversationProfile;
-import com.example.ChatApp.data.dto.ConversationDetailsDto;
+import com.example.ChatApp.data.conversation.response.ConversationDetailsDto;
 import com.example.ChatApp.data.conversation.request.CreateConversationRequestDto;
 import com.example.ChatApp.services.impl.ConversationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class ConversationController {
     }
 
     @GetMapping("/{username}")
-    public List<PrivateConversationProfile> getAllConversations(@PathVariable String username) {
+    public List<BaseConversationProfile> getAllConversations(@PathVariable String username) {
        return conversationService.getAllConversations(username);
     }
 

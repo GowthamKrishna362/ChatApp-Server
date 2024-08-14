@@ -1,4 +1,4 @@
-package com.example.ChatApp.models.Entity;
+package com.example.ChatApp.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,7 +37,7 @@ public class User {
     }
 
     @ManyToMany(mappedBy = "members")
-    private Set<PrivateConversation> conversations;
+    private Set<BaseConversation> conversations;
 
     @JsonIgnore
     public String getPassword() {

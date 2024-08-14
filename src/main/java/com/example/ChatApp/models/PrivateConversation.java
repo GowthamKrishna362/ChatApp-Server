@@ -1,4 +1,4 @@
-package com.example.ChatApp.models.Entity;
+package com.example.ChatApp.models;
 
 import com.example.ChatApp.data.enums.ConversationType;
 import jakarta.persistence.*;
@@ -14,7 +14,6 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @DiscriminatorValue("PRIVATE")
-@Table(name="Conversations")
 public class PrivateConversation extends BaseConversation {
 
     public PrivateConversation(Set<User> members) {

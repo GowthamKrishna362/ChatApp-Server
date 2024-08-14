@@ -1,7 +1,7 @@
 package com.example.ChatApp.controllers;
 
-import com.example.ChatApp.data.dto.LoginRequestDto;
-import com.example.ChatApp.models.Entity.User;
+import com.example.ChatApp.data.user.request.LoginRequestDto;
+import com.example.ChatApp.models.User;
 import com.example.ChatApp.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
