@@ -6,20 +6,15 @@ import com.example.ChatApp.models.Entity.Message;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConversationConverter {
-    public static List<MessageResponseDto> convertMessagesToDto(List<Message> messages) {
+public class MessageConverter {
+
+    public static List<MessageResponseDto> convertMessageListToDto(List<Message> messages) {
         List<MessageResponseDto> result = new ArrayList<>();
         for(Message message : messages ) {
-            MessageResponseDto messageResponseDto = new MessageResponseDto(
-                    message.getId(),
-                    message.getConversation().getId(),
-                    message.getUser().getUsername(),
-                    message.getMessageContent(),
-                    message.getTimestamp()
-                    );
-
+            MessageResponseDto messageResponseDto = new MessageResponseDto(message);
             result.add(messageResponseDto);
         }
         return result;
     }
+
 }

@@ -1,4 +1,4 @@
-package com.example.ChatApp.data.dto;
+package com.example.ChatApp.data.conversation.request;
 
-public record NewConversationRequestDto(String fromUsername, String targetUsername) {
+public record CreateConversationRequestDto(String fromUsername, String targetUsername) {
 }
