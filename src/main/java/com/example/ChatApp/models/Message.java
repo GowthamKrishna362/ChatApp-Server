@@ -1,4 +1,4 @@
-package com.example.ChatApp.models.Entity;
+package com.example.ChatApp.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -26,7 +26,7 @@ public class Message {
 
     @ManyToOne
     @JoinColumn(name = "conversationId")
-    private PrivateConversation conversation;
+    private BaseConversation conversation;
 
     private String messageContent;
 
@@ -37,7 +37,7 @@ public class Message {
 
     }
 
-    public Message(String messageContent, User sender, PrivateConversation conversation, LocalDateTime timestamp) {
+    public Message(String messageContent, User sender, BaseConversation conversation, LocalDateTime timestamp) {
         this.messageContent = messageContent;
         this.sender = sender;
         this.conversation = conversation;

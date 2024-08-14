@@ -2,9 +2,7 @@ package com.example.ChatApp.controllers;
 
 import com.example.ChatApp.data.dto.MessageResponseDto;
 import com.example.ChatApp.data.dto.PublishMessageRequestDto;
-import com.example.ChatApp.models.Entity.Message;
 import com.example.ChatApp.services.impl.MessageServiceImpl;
-import com.example.ChatApp.utils.converters.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

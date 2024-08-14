@@ -1,6 +1,6 @@
 package com.example.ChatApp.utils.validators;
 
-import com.example.ChatApp.models.Entity.User;
+import com.example.ChatApp.models.User;
 import jakarta.validation.ValidationException;
 
 import java.util.List;

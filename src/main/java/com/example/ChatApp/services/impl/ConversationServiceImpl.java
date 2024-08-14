@@ -1,11 +1,12 @@
 package com.example.ChatApp.services.impl;
 
+import com.example.ChatApp.data.conversation.profile.BaseConversationProfile;
+import com.example.ChatApp.data.conversation.profile.GroupConversationProfile;
 import com.example.ChatApp.data.conversation.profile.PrivateConversationProfile;
-import com.example.ChatApp.data.dto.ConversationDetailsDto;
+import com.example.ChatApp.data.conversation.response.ConversationDetailsDto;
 import com.example.ChatApp.data.dto.MessageResponseDto;
-import com.example.ChatApp.models.Entity.BaseConversation;
-import com.example.ChatApp.models.Entity.PrivateConversation;
-import com.example.ChatApp.models.Entity.User;
+import com.example.ChatApp.data.enums.ConversationType;
+import com.example.ChatApp.models.*;
 import com.example.ChatApp.repository.ConversationRepository;
 import com.example.ChatApp.repository.MessageRepository;
 import com.example.ChatApp.repository.UserRepository;
@@ -40,20 +41,25 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public List<PrivateConversationProfile> getAllConversations(String username) {
+    public List<BaseConversationProfile> getAllConversations(String username) {
         Optional<User> user = userRepository.findByUsername(username);
         Validator.validateValuePresent(user,"Username");
-        Set<PrivateConversation> conversations = user.orElse(null).getConversations();
-        return conversations.stream().map(PrivateConversationProfile::new).toList();
+        Set<BaseConversation> conversations = user.orElse(null).getConversations();
+        return conversations.stream().map(conversation -> {
+            if (conversation instanceof PrivateConversation) {
+                return new PrivateConversationProfile((PrivateConversation) conversation);
+            } else {
+                return new GroupConversationProfile((GroupConversation) conversation);
+            }
+        }).toList();
     }
 
     @Override
     public ConversationDetailsDto getConversationDetails(UUID conversationId) {
-        List<MessageResponseDto> messages = messageRepository.getMessagesByConversationId(conversationId).stream().map(MessageResponseDto::new).toList();
+        List<Message> messages = messageRepository.getMessagesByConversationId(conversationId);
         Optional<BaseConversation> conversation = conversationRepository.findById(conversationId);
         Validator.validateValuePresent(conversation, "Conversation Id");
-        PrivateConversationProfile privateConversationProfile = new PrivateConversationProfile(conversation.orElse(null));
-        return new ConversationDetailsDto(privateConversationProfile, messages);
+        return new ConversationDetailsDto(conversation.orElse(null), messages);
     }
 
 

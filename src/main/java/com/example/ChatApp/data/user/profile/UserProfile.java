@@ -1,6 +1,6 @@
 package com.example.ChatApp.data.user.profile;
 
-import com.example.ChatApp.models.Entity.User;
+import com.example.ChatApp.models.User;
 import lombok.Data;
 
 @Data
