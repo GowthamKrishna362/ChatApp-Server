@@ -1,25 +1,22 @@
 package com.example.ChatApp.models;
 
+import com.example.ChatApp.models.conversations.BaseConversation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "Messages")
-public class Message {
-
-    @Id
-    @Column(unique = true, updatable = false, nullable = false)
-    @GeneratedValue
-    private UUID id;
-
+public class Message extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "sender")
     private User sender;
@@ -31,16 +28,7 @@ public class Message {
     private String messageContent;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private LocalDateTime timestamp;
+    private LocalDateTime timeStamp;
 
-    public Message() {
 
-    }
-
-    public Message(String messageContent, User sender, BaseConversation conversation, LocalDateTime timestamp) {
-        this.messageContent = messageContent;
-        this.sender = sender;
-        this.conversation = conversation;
-        this.timestamp = timestamp;
-    }
 }

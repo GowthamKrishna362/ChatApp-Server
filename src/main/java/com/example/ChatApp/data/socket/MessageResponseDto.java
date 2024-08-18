@@ -1,26 +1,27 @@
-package com.example.ChatApp.data.dto;
+package com.example.ChatApp.data.socket;
 
+import com.example.ChatApp.data.enums.SocketMessageType;
 import com.example.ChatApp.models.Message;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.UUID;
 
-import java.time.LocalDateTime;
-
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
-public class MessageResponseDto {
-    private String id;
-    private String conversationId;
-    private String sender;
-    private String messageContent;
-    private LocalDateTime timestamp;
+public class MessageResponseDto extends SocketDtoBase {
+    private UUID tempId;
+    private final String id;
+    private final String conversationId;
+    private final String sender;
+    private final String messageContent;
+
     public MessageResponseDto(Message message) {
+        super(SocketMessageType.CHAT_MESSAGE, message.getTimeStamp());
         this.id = message.getId().toString();
         this.conversationId = message.getConversation().getId().toString();
         this.sender = message.getSender().getUsername();
         this.messageContent = message.getMessageContent();
-        this.timestamp = message.getTimestamp();
     }
 }
