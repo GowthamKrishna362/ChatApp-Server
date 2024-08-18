@@ -1,6 +1,6 @@
 package com.example.ChatApp.data.conversation.profile;
 
-import com.example.ChatApp.models.PrivateConversation;
+import com.example.ChatApp.models.conversations.PrivateConversation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

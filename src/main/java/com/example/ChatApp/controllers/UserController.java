@@ -1,11 +1,15 @@
 package com.example.ChatApp.controllers;
 
+import com.example.ChatApp.data.user.SliceOfUsers;
+import com.example.ChatApp.data.user.profile.UserProfile;
 import com.example.ChatApp.data.user.request.LoginRequestDto;
 import com.example.ChatApp.models.User;
 import com.example.ChatApp.services.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -25,6 +29,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public void login(@RequestBody LoginRequestDto loginRequestDto) {
          userService.login(loginRequestDto);
+    }
+
+    @GetMapping("/all/{prefix}")
+    @ResponseStatus(HttpStatus.OK)
+    public SliceOfUsers getUsersByPrefix(@PathVariable String prefix) {
+        return userService.getSliceOfUsersByPrefix(prefix);
     }
 
 

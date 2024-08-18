@@ -3,17 +3,22 @@ package com.example.ChatApp.services.impl;
 import com.example.ChatApp.data.conversation.profile.BaseConversationProfile;
 import com.example.ChatApp.data.conversation.profile.GroupConversationProfile;
 import com.example.ChatApp.data.conversation.profile.PrivateConversationProfile;
-import com.example.ChatApp.data.conversation.response.ConversationDetailsDto;
-import com.example.ChatApp.data.dto.MessageResponseDto;
-import com.example.ChatApp.data.enums.ConversationType;
+import com.example.ChatApp.data.conversation.response.ConversationMessageDetailsDto;
+import com.example.ChatApp.data.socket.MessageResponseDto;
 import com.example.ChatApp.models.*;
+import com.example.ChatApp.models.conversations.BaseConversation;
+import com.example.ChatApp.models.conversations.GroupConversation;
+import com.example.ChatApp.models.conversations.PrivateConversation;
 import com.example.ChatApp.repository.ConversationRepository;
 import com.example.ChatApp.repository.MessageRepository;
 import com.example.ChatApp.repository.UserRepository;
 import com.example.ChatApp.services.ConversationService;
+import com.example.ChatApp.utils.converters.ConversationConverter;
+import com.example.ChatApp.utils.converters.MessageConverter;
 import com.example.ChatApp.utils.validators.ConversationValidator;
 import com.example.ChatApp.utils.validators.Validator;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,13 +36,28 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     @Transactional()
-    public PrivateConversationProfile addNewPrivateConversation(String fromUsername, String targetUsername) {
+    public  PrivateConversationProfile addNewPrivateConversation(String fromUsername, String targetUsername) {
         List<String> usernameList = Arrays.asList(fromUsername, targetUsername);
         List<User> fetchedUsers = userRepository.findByUsernames(usernameList);
         validateUsers(fetchedUsers,fromUsername, targetUsername);
         PrivateConversation privateConversation = new PrivateConversation(new HashSet<>(fetchedUsers));
         conversationRepository.save(privateConversation);
         return new PrivateConversationProfile(privateConversation);
+    }
+
+//    TODO Validate users exist
+    @Override
+    public GroupConversationProfile addNewGroupConversation(String fromUsername, List<String> targetUsernames, String conversationName) {
+        User creator = userRepository.findByUsername(fromUsername).orElse(null);
+        List<User> targetUsers = userRepository.findByUsernames(targetUsernames);
+        List<User> allMembers = new ArrayList<>(targetUsers);
+        allMembers.add(creator);
+        GroupConversation groupConversation = new GroupConversation(
+                new HashSet<>(Collections.singleton(creator)),
+                new HashSet<>(allMembers),
+                conversationName);
+        conversationRepository.save(groupConversation);
+        return new GroupConversationProfile(groupConversation);
     }
 
     @Override
@@ -55,11 +75,17 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public ConversationDetailsDto getConversationDetails(UUID conversationId) {
+    public ConversationMessageDetailsDto getConversationMessageDetails(Long conversationId) {
+        BaseConversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(() -> new ValidationException("Conversation does not exist"));
+        return new ConversationMessageDetailsDto(
+                MessageConverter.toMessageResponseDtoList(conversation.getMessages()),
+                ConversationConverter.toConversationOpenEventDtoList(conversation.getConversationOpenEvents()));
+    }
+
+    public List<MessageResponseDto> getConversationMessages(Long conversationId) {
         List<Message> messages = messageRepository.getMessagesByConversationId(conversationId);
-        Optional<BaseConversation> conversation = conversationRepository.findById(conversationId);
-        Validator.validateValuePresent(conversation, "Conversation Id");
-        return new ConversationDetailsDto(conversation.orElse(null), messages);
+        return MessageConverter.toMessageResponseDtoList(messages);
     }
 
 
@@ -69,5 +95,6 @@ public class ConversationServiceImpl implements ConversationService {
         ConversationValidator.validateNotAddingSelfChat(fromUsername, targetUsername);
         ConversationValidator.validateRequestedUsersPresent(fetchedUsers, fromUsername, targetUsername);
     }
+
 
 }

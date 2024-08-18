@@ -1,6 +1,6 @@
 package com.example.ChatApp.advice;
 
-import com.example.ChatApp.data.dto.ErrorDto;
+import com.example.ChatApp.data.ErrorDto;
 import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

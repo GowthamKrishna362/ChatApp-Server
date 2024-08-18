@@ -1,5 +1,6 @@
 package com.example.ChatApp.models;
 
+import com.example.ChatApp.models.conversations.BaseConversation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -9,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,11 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity()
 @Table(name = "USERS")
-public class User {
-    @Id
-    @Column(unique = true, updatable = false, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+public class User extends BaseEntity {
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -31,10 +27,6 @@ public class User {
 
     @Column(nullable = false)
     private String password;
-
-    public User(String username) {
-        this.username = username;
-    }
 
     @ManyToMany(mappedBy = "members")
     private Set<BaseConversation> conversations;
