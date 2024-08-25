@@ -1,7 +1,6 @@
 package com.example.ChatApp.data.user;
 
 import com.example.ChatApp.data.SliceList;
-import com.example.ChatApp.data.user.profile.UserProfile;
 import com.example.ChatApp.models.User;
 import lombok.*;
 import org.springframework.data.domain.Slice;

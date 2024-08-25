@@ -18,7 +18,7 @@ public class MessageResponseDto extends SocketDtoBase {
     private final String messageContent;
 
     public MessageResponseDto(Message message) {
-        super(SocketMessageType.CHAT_MESSAGE, message.getTimeStamp());
+        super(SocketMessageType.CHAT_MESSAGE, message.getCreatedAt());
         this.id = message.getId().toString();
         this.conversationId = message.getConversation().getId().toString();
         this.sender = message.getSender().getUsername();

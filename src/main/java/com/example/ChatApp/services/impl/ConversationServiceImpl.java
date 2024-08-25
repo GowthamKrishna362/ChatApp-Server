@@ -3,6 +3,8 @@ package com.example.ChatApp.services.impl;
 import com.example.ChatApp.data.conversation.profile.BaseConversationProfile;
 import com.example.ChatApp.data.conversation.profile.GroupConversationProfile;
 import com.example.ChatApp.data.conversation.profile.PrivateConversationProfile;
+import com.example.ChatApp.data.conversation.request.CreateConversationRequestDto;
+import com.example.ChatApp.data.conversation.request.CreateGroupConversationRequestDto;
 import com.example.ChatApp.data.conversation.response.ConversationMessageDetailsDto;
 import com.example.ChatApp.data.socket.MessageResponseDto;
 import com.example.ChatApp.models.*;
@@ -13,8 +15,8 @@ import com.example.ChatApp.repository.ConversationRepository;
 import com.example.ChatApp.repository.MessageRepository;
 import com.example.ChatApp.repository.UserRepository;
 import com.example.ChatApp.services.ConversationService;
-import com.example.ChatApp.utils.converters.ConversationConverter;
-import com.example.ChatApp.utils.converters.MessageConverter;
+import com.example.ChatApp.services.mappers.ConversationMapper;
+import com.example.ChatApp.services.mappers.MessageMapper;
 import com.example.ChatApp.utils.validators.ConversationValidator;
 import com.example.ChatApp.utils.validators.Validator;
 import jakarta.transaction.Transactional;
@@ -36,18 +38,21 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     @Transactional()
-    public  PrivateConversationProfile addNewPrivateConversation(String fromUsername, String targetUsername) {
+    public PrivateConversationProfile  addNewPrivateConversation(String fromUsername, String targetUsername) {
         List<String> usernameList = Arrays.asList(fromUsername, targetUsername);
         List<User> fetchedUsers = userRepository.findByUsernames(usernameList);
-        validateUsers(fetchedUsers,fromUsername, targetUsername);
+        validateUsers(fetchedUsers, fromUsername, targetUsername);
         PrivateConversation privateConversation = new PrivateConversation(new HashSet<>(fetchedUsers));
         conversationRepository.save(privateConversation);
         return new PrivateConversationProfile(privateConversation);
     }
 
-//    TODO Validate users exist
+    //    TODO Validate users exist
     @Override
-    public GroupConversationProfile addNewGroupConversation(String fromUsername, List<String> targetUsernames, String conversationName) {
+    public GroupConversationProfile addNewGroupConversation(CreateGroupConversationRequestDto createGroupConversationRequestDto) {
+        String fromUsername = createGroupConversationRequestDto.fromUsername();
+        List<String> targetUsernames = createGroupConversationRequestDto.targetUsernames();
+        String conversationName = createGroupConversationRequestDto.conversationName();
         User creator = userRepository.findByUsername(fromUsername).orElse(null);
         List<User> targetUsers = userRepository.findByUsernames(targetUsernames);
         List<User> allMembers = new ArrayList<>(targetUsers);
@@ -63,7 +68,7 @@ public class ConversationServiceImpl implements ConversationService {
     @Override
     public List<BaseConversationProfile> getAllConversations(String username) {
         Optional<User> user = userRepository.findByUsername(username);
-        Validator.validateValuePresent(user,"Username");
+        Validator.validateValuePresent(user, "Username");
         Set<BaseConversation> conversations = user.orElse(null).getConversations();
         return conversations.stream().map(conversation -> {
             if (conversation instanceof PrivateConversation) {
@@ -79,13 +84,13 @@ public class ConversationServiceImpl implements ConversationService {
         BaseConversation conversation = conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new ValidationException("Conversation does not exist"));
         return new ConversationMessageDetailsDto(
-                MessageConverter.toMessageResponseDtoList(conversation.getMessages()),
-                ConversationConverter.toConversationOpenEventDtoList(conversation.getConversationOpenEvents()));
+                MessageMapper.toMessageResponseDtoList(conversation.getMessages()),
+                ConversationMapper.toConversationOpenEventDtoList(conversation.getConversationOpenEvents()));
     }
 
     public List<MessageResponseDto> getConversationMessages(Long conversationId) {
         List<Message> messages = messageRepository.getMessagesByConversationId(conversationId);
-        return MessageConverter.toMessageResponseDtoList(messages);
+        return MessageMapper.toMessageResponseDtoList(messages);
     }
 
 

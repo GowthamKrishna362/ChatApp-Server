@@ -1,9 +1,7 @@
-package com.example.ChatApp.data.user.profile;
+package com.example.ChatApp.data.user;
 
 import com.example.ChatApp.models.User;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class UserProfile {

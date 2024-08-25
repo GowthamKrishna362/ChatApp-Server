@@ -13,6 +13,7 @@ import com.example.ChatApp.repository.MessageRepository;
 import com.example.ChatApp.repository.UserRepository;
 import com.example.ChatApp.services.SocketService;
 import com.example.ChatApp.utils.validators.Validator;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,16 +33,17 @@ public class SocketServiceImpl implements SocketService {
 
     @Override
     public MessageResponseDto addNewMessage(PublishMessageRequestDto publishMessageRequestDto) {
-        Optional<User> sender = userRepository.findByUsername(publishMessageRequestDto.getSender());
-        Optional <BaseConversation> conversation = conversationRepository.findById(publishMessageRequestDto.getConversationId());
-        Validator.validateValuePresent(sender, "Username");
-        Validator.validateValuePresent(conversation, "Conversation Id");
+        User sender = userRepository
+                .findByUsername(publishMessageRequestDto.getSender())
+                .orElseThrow(() -> new ValidationException("Username not present"));
+        BaseConversation conversation = conversationRepository
+                .findById(publishMessageRequestDto.getConversationId())
+                .orElseThrow(() -> new ValidationException("Username not present"));
         Validator.validateCredentialNotEmpty(publishMessageRequestDto.getMessageContent(), "Message");
         Message message = new Message(
-                sender.orElse(null),
-                conversation.orElse(null),
-                publishMessageRequestDto.getMessageContent(),
-                publishMessageRequestDto.getTimeStamp()
+                sender,
+                conversation,
+                publishMessageRequestDto
         );
          messageRepository.save(message);
          return new MessageResponseDto(message);

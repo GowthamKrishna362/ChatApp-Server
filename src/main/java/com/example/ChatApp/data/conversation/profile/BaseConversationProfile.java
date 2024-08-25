@@ -1,7 +1,7 @@
 package com.example.ChatApp.data.conversation.profile;
 
 import com.example.ChatApp.data.enums.ConversationType;
-import com.example.ChatApp.data.user.profile.UserProfile;
+import com.example.ChatApp.data.user.UserProfile;
 import com.example.ChatApp.models.conversations.BaseConversation;
 import lombok.*;
 
