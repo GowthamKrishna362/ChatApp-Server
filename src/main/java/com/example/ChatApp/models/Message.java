@@ -1,14 +1,13 @@
 package com.example.ChatApp.models;
 
+import com.example.ChatApp.data.socket.PublishMessageRequestDto;
 import com.example.ChatApp.models.conversations.BaseConversation;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Messages")
-public class Message extends BaseEntity {
+public class Message extends ClientTimestampBaseEntity {
     @ManyToOne
     @JoinColumn(name = "sender")
     private User sender;
@@ -27,8 +26,11 @@ public class Message extends BaseEntity {
 
     private String messageContent;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private LocalDateTime timeStamp;
-
+    public Message(User sender, BaseConversation conversation, PublishMessageRequestDto publishMessageRequestDto) {
+        super(publishMessageRequestDto.getTimeStamp());
+        this.sender = sender;
+        this.conversation =conversation;
+        this.messageContent = publishMessageRequestDto.getMessageContent();
+    }
 
 }

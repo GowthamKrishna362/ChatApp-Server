@@ -1,12 +1,9 @@
 package com.example.ChatApp.controllers;
 
-import com.example.ChatApp.data.enums.SocketMessageType;
 import com.example.ChatApp.data.socket.ConversationOpenEventDto;
 import com.example.ChatApp.data.socket.MessageResponseDto;
 import com.example.ChatApp.data.socket.PublishMessageRequestDto;
-import com.example.ChatApp.data.socket.SocketDtoBase;
 import com.example.ChatApp.services.impl.SocketServiceImpl;
-import com.example.ChatApp.utils.converters.ConversationConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

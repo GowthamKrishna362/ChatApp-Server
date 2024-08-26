@@ -1,15 +1,15 @@
 package com.example.ChatApp.controllers;
 
+import com.example.ChatApp.data.user.LoginResponseDto;
 import com.example.ChatApp.data.user.SliceOfUsers;
-import com.example.ChatApp.data.user.profile.UserProfile;
-import com.example.ChatApp.data.user.request.LoginRequestDto;
+import com.example.ChatApp.data.user.LoginRequestDto;
 import com.example.ChatApp.models.User;
 import com.example.ChatApp.services.impl.UserServiceImpl;
+import com.example.ChatApp.services.jwt.JwtService;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
@@ -18,17 +18,25 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private JwtService jwtService;
 
-    @PostMapping("/new")
+    @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public User create(@RequestBody User user) {
-        return userService.saveUser(user);
+        try {
+            return userService.saveUser(user);
+        } catch (Exception e) {
+            throw new ValidationException(e.getMessage());
+        }
     }
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public void login(@RequestBody LoginRequestDto loginRequestDto) {
-         userService.login(loginRequestDto);
+    public LoginResponseDto Login(@RequestBody LoginRequestDto loginRequestDto) {
+         User authenticatedUser = userService.login(loginRequestDto);
+         String jwtToken = jwtService.generateToken(authenticatedUser);
+         return new LoginResponseDto(jwtToken, jwtService.getExpirationTime());
     }
 
     @GetMapping("/all/{prefix}")

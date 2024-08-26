@@ -7,7 +7,9 @@ import com.example.ChatApp.data.conversation.request.CreateGroupConversationRequ
 import com.example.ChatApp.data.conversation.response.ConversationMessageDetailsDto;
 import com.example.ChatApp.data.conversation.request.CreateConversationRequestDto;
 import com.example.ChatApp.data.socket.MessageResponseDto;
+import com.example.ChatApp.models.User;
 import com.example.ChatApp.services.impl.ConversationServiceImpl;
+import com.example.ChatApp.utils.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,20 +24,16 @@ public class ConversationController {
     ConversationServiceImpl conversationService;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/private/new")
-    public PrivateConversationProfile createPrivateConversation(@RequestBody CreateConversationRequestDto createConversationRequestDto) {
-        String fromUsername = createConversationRequestDto.fromUsername();
-        String targetUsername = createConversationRequestDto.targetUsername();
-        return conversationService.addNewPrivateConversation(fromUsername, targetUsername);
+    @PostMapping("/private/new/{targetUsername}")
+    public PrivateConversationProfile createPrivateConversation(@PathVariable String targetUsername) {
+        User fromUser = AuthUtil.currentUser();
+        return conversationService.addNewPrivateConversation(fromUser.getUsername() , targetUsername);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/group/new")
     public GroupConversationProfile createGroupConversation(@RequestBody CreateGroupConversationRequestDto createGroupConversationRequestDto) {
-        return conversationService.addNewGroupConversation(
-                createGroupConversationRequestDto.fromUsername(),
-                createGroupConversationRequestDto.targetUsernames(),
-                createGroupConversationRequestDto.conversationName());
+        return conversationService.addNewGroupConversation(createGroupConversationRequestDto);
     }
 
 

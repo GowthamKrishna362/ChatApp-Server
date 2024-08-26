@@ -11,12 +11,12 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class SliceList {
+public abstract class SliceList<T> {
     private int currentPage;
     private int pageSize;
     private boolean hasNext;
 
-    public SliceList(Slice<?> slice) {
+    public SliceList(Slice<T> slice) {
         this.currentPage = slice.getNumber();
         this.pageSize = slice.getSize();
         this.hasNext = slice.hasNext();
