@@ -2,6 +2,7 @@ package com.example.ChatApp.data.socket;
 
 import com.example.ChatApp.data.enums.SocketMessageType;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

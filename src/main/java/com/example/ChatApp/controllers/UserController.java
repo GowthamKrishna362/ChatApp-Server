@@ -1,5 +1,6 @@
 package com.example.ChatApp.controllers;
 
+import com.example.ChatApp.data.exception.UserNotFoundException;
 import com.example.ChatApp.data.user.LoginResponseDto;
 import com.example.ChatApp.data.user.SliceOfUsers;
 import com.example.ChatApp.data.user.LoginRequestDto;
@@ -23,17 +24,16 @@ public class UserController {
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public User create(@RequestBody User user) {
-        try {
-            return userService.saveUser(user);
-        } catch (Exception e) {
-            throw new ValidationException(e.getMessage());
-        }
+    public LoginResponseDto create(@RequestBody User user) {
+        User newUser =  userService.saveUser(user);
+        String jwtToken = jwtService.generateToken(newUser);
+        return new LoginResponseDto(jwtToken, jwtService.getExpirationTime());
+
     }
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public LoginResponseDto Login(@RequestBody LoginRequestDto loginRequestDto) {
+    public LoginResponseDto Login(@RequestBody LoginRequestDto loginRequestDto) throws UserNotFoundException {
          User authenticatedUser = userService.login(loginRequestDto);
          String jwtToken = jwtService.generateToken(authenticatedUser);
          return new LoginResponseDto(jwtToken, jwtService.getExpirationTime());

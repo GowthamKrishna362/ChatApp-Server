@@ -1,4 +1,4 @@
-package com.example.ChatApp.config;
+package com.example.ChatApp.filter;
 
 import com.example.ChatApp.services.jwt.JwtService;
 import jakarta.servlet.FilterChain;
@@ -49,16 +49,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (username != null && authentication == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
                             userDetails.getAuthorities()
                     );
-
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+
                 }
             }
 

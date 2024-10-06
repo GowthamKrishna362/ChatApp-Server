@@ -1,5 +1,6 @@
-package com.example.ChatApp.data.socket;
+package com.example.ChatApp.data.socket.TextMessage;
 
+import com.example.ChatApp.data.socket.SocketDtoBase;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,6 @@ import java.util.UUID;
 @Setter
 public class PublishMessageRequestDto extends SocketDtoBase {
     private  UUID tempId;
-    private  String sender;
     private  String messageContent;
     private  Long conversationId;
 }

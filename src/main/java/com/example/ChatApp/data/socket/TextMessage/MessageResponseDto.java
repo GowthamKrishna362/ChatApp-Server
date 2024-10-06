@@ -1,6 +1,7 @@
-package com.example.ChatApp.data.socket;
+package com.example.ChatApp.data.socket.TextMessage;
 
 import com.example.ChatApp.data.enums.SocketMessageType;
+import com.example.ChatApp.data.socket.SocketDtoBase;
 import com.example.ChatApp.models.Message;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

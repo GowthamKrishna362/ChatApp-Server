@@ -5,13 +5,16 @@ import com.example.ChatApp.data.conversation.profile.GroupConversationProfile;
 import com.example.ChatApp.data.conversation.profile.PrivateConversationProfile;
 import com.example.ChatApp.data.conversation.request.CreateGroupConversationRequestDto;
 import com.example.ChatApp.data.conversation.response.ConversationMessageDetailsDto;
-import com.example.ChatApp.data.conversation.request.CreateConversationRequestDto;
-import com.example.ChatApp.data.socket.MessageResponseDto;
+import com.example.ChatApp.data.exception.ConversationNotFoundException;
+import com.example.ChatApp.data.exception.UserNotFoundException;
+import com.example.ChatApp.data.socket.ConversationCreatedEventDto;
+import com.example.ChatApp.data.socket.TextMessage.MessageResponseDto;
 import com.example.ChatApp.models.User;
 import com.example.ChatApp.services.impl.ConversationServiceImpl;
 import com.example.ChatApp.utils.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,29 +24,40 @@ import java.util.List;
 @RequestMapping("/api/v1/conversation")
 public class ConversationController {
     @Autowired
-    ConversationServiceImpl conversationService;
+    private ConversationServiceImpl conversationService;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/private/new/{targetUsername}")
-    public PrivateConversationProfile createPrivateConversation(@PathVariable String targetUsername) {
+    public PrivateConversationProfile createPrivateConversation(@PathVariable String targetUsername) throws UserNotFoundException {
         User fromUser = AuthUtil.currentUser();
-        return conversationService.addNewPrivateConversation(fromUser.getUsername() , targetUsername);
+        PrivateConversationProfile conversationProfile =
+                conversationService.addNewPrivateConversation(fromUser.getUsername() , targetUsername);
+
+        messagingTemplate.convertAndSend(
+                "/topic/user/" + targetUsername,
+                new ConversationCreatedEventDto(conversationProfile)
+        );
+        return conversationProfile;
+
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/group/new")
-    public GroupConversationProfile createGroupConversation(@RequestBody CreateGroupConversationRequestDto createGroupConversationRequestDto) {
+    public GroupConversationProfile createGroupConversation(@RequestBody CreateGroupConversationRequestDto createGroupConversationRequestDto ) throws UserNotFoundException {
         return conversationService.addNewGroupConversation(createGroupConversationRequestDto);
     }
 
 
     @GetMapping("/{username}")
-    public List<BaseConversationProfile> getAllConversations(@PathVariable String username) {
+    public List<BaseConversationProfile> getAllConversations(@PathVariable String username) throws UserNotFoundException {
        return conversationService.getAllConversations(username);
     }
 
     @GetMapping("/{conversationId}/messageDetails")
-    public ConversationMessageDetailsDto getConversationMessageDetails(@PathVariable Long conversationId) {
+    public ConversationMessageDetailsDto getConversationMessageDetails(@PathVariable Long conversationId) throws ConversationNotFoundException {
         return conversationService.getConversationMessageDetails(conversationId);
     }
 
