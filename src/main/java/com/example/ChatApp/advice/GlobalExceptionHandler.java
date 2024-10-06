@@ -1,6 +1,7 @@
 package com.example.ChatApp.advice;
 
 import com.example.ChatApp.data.ErrorDto;
+import com.example.ChatApp.data.exception.UserNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorDto> handleValidationException(Exception ex){
         ErrorDto errorDto = new ErrorDto(ex.getMessage());
-        return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorDto> handleEntityNotFoundException(Exception ex){
+        ErrorDto errorDto = new ErrorDto(ex.getMessage());
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
     }
 }

@@ -1,6 +1,6 @@
 package com.example.ChatApp.models;
 
-import com.example.ChatApp.data.socket.PublishMessageRequestDto;
+import com.example.ChatApp.data.socket.TextMessage.PublishMessageRequestDto;
 import com.example.ChatApp.models.conversations.BaseConversation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

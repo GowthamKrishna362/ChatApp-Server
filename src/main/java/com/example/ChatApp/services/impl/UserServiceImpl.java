@@ -1,5 +1,6 @@
 package com.example.ChatApp.services.impl;
 
+import com.example.ChatApp.data.exception.UserNotFoundException;
 import com.example.ChatApp.data.user.SliceOfUsers;
 import com.example.ChatApp.data.user.LoginRequestDto;
 import com.example.ChatApp.models.User;
@@ -39,12 +40,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    public User login(LoginRequestDto loginRequestDto) {
+    public User login(LoginRequestDto loginRequestDto) throws UserNotFoundException {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequestDto.username(),
                 loginRequestDto.password()
         ));
-        return userRepository.findByUsername(loginRequestDto.username()).orElseThrow();
+        return userRepository.findByUsername(loginRequestDto.username()).orElseThrow(() -> new UserNotFoundException(loginRequestDto.username()));
     }
 
     @Override
@@ -63,8 +64,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository
+            return userRepository
                 .findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+
     }
 }

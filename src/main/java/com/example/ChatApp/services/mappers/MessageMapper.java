@@ -1,6 +1,6 @@
 package com.example.ChatApp.services.mappers;
 
-import com.example.ChatApp.data.socket.MessageResponseDto;
+import com.example.ChatApp.data.socket.TextMessage.MessageResponseDto;
 import com.example.ChatApp.models.Message;
 
 import java.util.List;

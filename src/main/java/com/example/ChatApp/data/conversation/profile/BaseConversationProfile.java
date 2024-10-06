@@ -5,6 +5,7 @@ import com.example.ChatApp.data.user.UserProfile;
 import com.example.ChatApp.models.conversations.BaseConversation;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 

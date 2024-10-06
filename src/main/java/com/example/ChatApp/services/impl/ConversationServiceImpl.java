@@ -3,10 +3,11 @@ package com.example.ChatApp.services.impl;
 import com.example.ChatApp.data.conversation.profile.BaseConversationProfile;
 import com.example.ChatApp.data.conversation.profile.GroupConversationProfile;
 import com.example.ChatApp.data.conversation.profile.PrivateConversationProfile;
-import com.example.ChatApp.data.conversation.request.CreateConversationRequestDto;
 import com.example.ChatApp.data.conversation.request.CreateGroupConversationRequestDto;
 import com.example.ChatApp.data.conversation.response.ConversationMessageDetailsDto;
-import com.example.ChatApp.data.socket.MessageResponseDto;
+import com.example.ChatApp.data.exception.ConversationNotFoundException;
+import com.example.ChatApp.data.exception.UserNotFoundException;
+import com.example.ChatApp.data.socket.TextMessage.MessageResponseDto;
 import com.example.ChatApp.models.*;
 import com.example.ChatApp.models.conversations.BaseConversation;
 import com.example.ChatApp.models.conversations.GroupConversation;
@@ -20,7 +21,6 @@ import com.example.ChatApp.services.mappers.MessageMapper;
 import com.example.ChatApp.utils.validators.ConversationValidator;
 import com.example.ChatApp.utils.validators.Validator;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,22 +38,25 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     @Transactional()
-    public PrivateConversationProfile  addNewPrivateConversation(String fromUsername, String targetUsername) {
-        List<String> usernameList = Arrays.asList(fromUsername, targetUsername);
-        List<User> fetchedUsers = userRepository.findByUsernames(usernameList);
-        validateUsers(fetchedUsers, fromUsername, targetUsername);
-        PrivateConversation privateConversation = new PrivateConversation(new HashSet<>(fetchedUsers));
+    //    TODO Validate users exist, check if findByUsername for creator is needed, get from AuthUtil - might be outdated?
+    public PrivateConversationProfile  addNewPrivateConversation(String fromUsername, String targetUsername) throws UserNotFoundException {
+        Validator.validateCredentialNotEmpty(fromUsername, "from username");
+        Validator.validateCredentialNotEmpty(targetUsername, "target username");
+        ConversationValidator.validateNotAddingSelfChat(fromUsername, targetUsername);
+        User creator = userRepository.findByUsername(fromUsername).orElseThrow(() -> new UserNotFoundException(fromUsername));
+        User target = userRepository.findByUsername(targetUsername).orElseThrow(() -> new UserNotFoundException(targetUsername));
+        PrivateConversation privateConversation = new PrivateConversation(new HashSet<>(Arrays.asList(creator, target)));
         conversationRepository.save(privateConversation);
         return new PrivateConversationProfile(privateConversation);
     }
 
-    //    TODO Validate users exist
+    //    TODO Validate users exist, check if findByUsername for creator is needed, get from AuthUtil - might be outdated?
     @Override
-    public GroupConversationProfile addNewGroupConversation(CreateGroupConversationRequestDto createGroupConversationRequestDto) {
+    public GroupConversationProfile addNewGroupConversation(CreateGroupConversationRequestDto createGroupConversationRequestDto) throws UserNotFoundException {
         String fromUsername = createGroupConversationRequestDto.fromUsername();
         List<String> targetUsernames = createGroupConversationRequestDto.targetUsernames();
         String conversationName = createGroupConversationRequestDto.conversationName();
-        User creator = userRepository.findByUsername(fromUsername).orElse(null);
+        User creator = userRepository.findByUsername(fromUsername).orElseThrow(() ->new UserNotFoundException(fromUsername));
         List<User> targetUsers = userRepository.findByUsernames(targetUsernames);
         List<User> allMembers = new ArrayList<>(targetUsers);
         allMembers.add(creator);
@@ -66,10 +69,9 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public List<BaseConversationProfile> getAllConversations(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
-        Validator.validateValuePresent(user, "Username");
-        Set<BaseConversation> conversations = user.orElse(null).getConversations();
+    public List<BaseConversationProfile> getAllConversations(String username) throws UserNotFoundException {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        Set<BaseConversation> conversations = user.getConversations();
         return conversations.stream().map(conversation -> {
             if (conversation instanceof PrivateConversation) {
                 return new PrivateConversationProfile((PrivateConversation) conversation);
@@ -80,9 +82,9 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public ConversationMessageDetailsDto getConversationMessageDetails(Long conversationId) {
+    public ConversationMessageDetailsDto getConversationMessageDetails(Long conversationId) throws ConversationNotFoundException {
         BaseConversation conversation = conversationRepository.findById(conversationId)
-                .orElseThrow(() -> new ValidationException("Conversation does not exist"));
+                .orElseThrow(() -> new ConversationNotFoundException(conversationId));
         return new ConversationMessageDetailsDto(
                 MessageMapper.toMessageResponseDtoList(conversation.getMessages()),
                 ConversationMapper.toConversationOpenEventDtoList(conversation.getConversationOpenEvents()));
@@ -95,9 +97,6 @@ public class ConversationServiceImpl implements ConversationService {
 
 
     private void validateUsers(List<User> fetchedUsers, String fromUsername, String targetUsername) {
-        Validator.validateCredentialNotEmpty(fromUsername, "from username");
-        Validator.validateCredentialNotEmpty(targetUsername, "target username");
-        ConversationValidator.validateNotAddingSelfChat(fromUsername, targetUsername);
         ConversationValidator.validateRequestedUsersPresent(fetchedUsers, fromUsername, targetUsername);
     }
 
